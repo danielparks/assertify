@@ -1,29 +1,9 @@
-#[macro_export]
-macro_rules! assertify {
-    ($func:ident($($arg:expr),*) == $expected:expr) => {
-        let actual = $func($($arg),*);
-        if actual != $expected {
-            panic!(
-                "failed: {}\n  \
-                  expected: {:?}\n  \
-                  actual:   {:?}\n",
-                stringify!($func($($arg),*)), $expected, actual);
-        }
-    }
-}
-
-#[macro_export]
-macro_rules! testify {
-    ($name:ident, $func:ident($($arg:expr),*) == $expected:expr) => {
-        #[test]
-        fn $name() {
-            ::assertify::assertify!($func($($arg),*) == $expected);
-        }
-    }
-}
+pub use assertify_proc_macros::{assertify, testify};
 
 #[cfg(test)]
 mod tests {
+    pub use super::*;
+
     fn add(a: i32, b: i32) -> i32 {
         a + b
     }
