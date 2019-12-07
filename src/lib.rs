@@ -17,7 +17,7 @@ macro_rules! testify {
     ($name:ident, $func:ident($($arg:expr),*) == $expected:expr) => {
         #[test]
         fn $name() {
-            assertify!($func($($arg),*) == $expected);
+            ::assertify::assertify!($func($($arg),*) == $expected);
         }
     }
 }
