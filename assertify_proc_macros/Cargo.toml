@@ -2,6 +2,8 @@
 name = "assertify_proc_macros"
 version = "0.1.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
+description = "Actual macro code for assertify. Do not use this directly."
+license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [lib]

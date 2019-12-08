@@ -1,3 +1,4 @@
 /target
+/assertify_proc_macros/target
 **/*.rs.bk
 Cargo.lock
