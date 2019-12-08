@@ -11,13 +11,21 @@ fn my_test() {
 }
 ```
 
+## To do
+
+  * Test failures
+  * Test compilation failures
+  * Fix compilation failure errors
+  * Improve failure messages when for ops other than ==
+  * Document macros
+
 ## License
 
 This project dual-licensed under the Apache 2 and MIT licenses. You may choose
 to use either.
 
- * [Apache License, Version 2.0](LICENSE-APACHE)
- * [MIT license](LICENSE-MIT)
+  * [Apache License, Version 2.0](LICENSE-APACHE)
+  * [MIT license](LICENSE-MIT)
 
 ### Contributions
 
