@@ -4,6 +4,9 @@ pub use assertify_proc_macros::{assertify, testify};
 mod tests {
     pub use super::*;
 
+    testify!(simple_eq, 1 + 2 == 3);
+    testify!(simple_gt, 1 + 2 > 2);
+
     fn add(a: i32, b: i32) -> i32 {
         a + b
     }
@@ -29,4 +32,18 @@ mod tests {
     }
 
     testify!(concat_bytes_literals, concat_bytes(b"a", b"b") == b"ab");
+
+    fn result(good: bool) -> Result<(), &'static str> {
+        if good {
+            Ok(())
+        } else {
+            Err("bad")
+        }
+    }
+
+    testify!(result_ok, result(true) == Ok(()));
+    testify!(result_unwrap, result(true).unwrap() == ());
+    testify!(result_err, result(false) == Err("bad"));
+    testify!(result_not_ok, result(false) != Ok(()));
+    testify!(result_not_err, result(false) != Err("nope"));
 }
