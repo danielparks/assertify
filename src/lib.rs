@@ -1,11 +1,20 @@
-pub use assertify_proc_macros::{assertify, testify};
+use proc_macro_hack::proc_macro_hack;
+
+#[proc_macro_hack]
+pub use assertify_proc_macros::assertify;
+
+pub use assertify_proc_macros::testify;
 
 #[cfg(test)]
 mod tests {
     pub use super::*;
 
+    #[test]
+    fn assertify_simple_expr() {
+        assertify!(1 - 2 == -1);
+    }
+
     testify!(simple_eq, 1 + 2 == 3);
-    testify!(simple_gt, 1 + 2 > 2);
 
     fn add(a: i32, b: i32) -> i32 {
         a + b
@@ -46,4 +55,16 @@ mod tests {
     testify!(result_err, result(false) == Err("bad"));
     testify!(result_not_ok, result(false) != Ok(()));
     testify!(result_not_err, result(false) != Err("nope"));
+
+    #[test]
+    #[should_panic]
+    fn fail_simple_expr() {
+        assertify!(1 + 2 == 0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_result_ok() {
+        assertify!(result(false).unwrap() == ());
+    }
 }

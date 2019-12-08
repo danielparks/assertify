@@ -1,4 +1,5 @@
 extern crate proc_macro;
+use proc_macro_hack::proc_macro_hack;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
 use syn::parse_macro_input;
@@ -57,7 +58,7 @@ impl Parse for Testified {
     }
 }
 
-#[proc_macro]
+#[proc_macro_hack]
 pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let assertified = parse_macro_input!(input as Assertified);
     quote!(#assertified).into()

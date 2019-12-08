@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 assertify_proc_macros = { version = "*", path = "assertify_proc_macros" }
+proc-macro-hack = "0.5"
