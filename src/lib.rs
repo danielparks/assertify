@@ -62,10 +62,24 @@ mod tests {
     testify!(result_not_ok, result(false) != Ok(()));
     testify!(result_not_err, result(false) != Err("nope"));
 
+    // FIXME check error messages from should_panic
+
     #[test]
     #[should_panic]
-    fn fail_simple_expr() {
+    fn fail_simple_eq() {
         assertify!(1 + 2 == 0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_simple_ne() {
+        assertify!(1 + 2 != 3);
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_simple_gt() {
+        assertify!(1 + 2 > 4);
     }
 
     #[test]

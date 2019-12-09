@@ -19,27 +19,51 @@ impl ToTokens for Assertified {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         match &self.0 {
             syn::Expr::Binary(expr) => {
-                // FIXME? ignore attributes
-                // FIXME? b"ab" comes out as [97, 98]
-                let actual = &expr.left;
-                let op = &expr.op;
-                let expected = &expr.right;
-                tokens.extend(quote!({
-                    let actual = #actual;
-                    let expected = #expected;
-                    if !(actual #op expected) {
-                        panic!(
-                            "failed: {}\n  \
-                              actual:   {:?}\n  \
-                              expected: {:?}\n",
-                            stringify!(#expr), actual, expected);
-                    }
-                }));
+                self.binary_expression_to_tokens(&expr, tokens);
             }
             _ => {
-                panic!("what am I supposed to to do??? {:?}", self);
+                panic!("not a binary expression, e.g. 1 == 1");
             }
         }
+    }
+}
+
+impl Assertified {
+    fn binary_expression_to_tokens(&self, expr: &syn::ExprBinary, tokens: &mut TokenStream) {
+        match expr.op {
+            syn::BinOp::Eq(_)
+            | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
+            | syn::BinOp::Ne(_)
+            | syn::BinOp::Gt(_) | syn::BinOp::Ge(_) => {
+                // These comparisons are fine.
+            },
+            _ => {
+                panic!("Expected comparison operator");
+            }
+        }
+
+        // FIXME? ignore attributes
+        // FIXME? b"ab" comes out as [97, 98]
+        let actual = &expr.left;
+        let expected = &expr.right;
+        let op = &expr.op;
+        tokens.extend(quote!({
+            let actual = #actual;
+            let expected = #expected;
+            let op = stringify!(#op);
+            if !(actual #op expected) {
+                panic!(
+                    "failed: {expr}\n  \
+                      actual:   {sp:width$} {actual:?}\n  \
+                      expected: {op:width$} {expected:?}\n",
+                    expr=stringify!(#expr),
+                    sp="",
+                    op=op,
+                    width=op.len(),
+                    actual=actual,
+                    expected=expected);
+            }
+        }));
     }
 }
 
