@@ -10,6 +10,12 @@ mod tests {
     pub use super::*;
 
     #[test]
+    fn trybuild_tests() {
+        let t = trybuild::TestCases::new();
+        t.compile_fail("tests/trybuild-failures/*.rs");
+    }
+
+    #[test]
     fn assertify_simple_expr() {
         assertify!(1 - 2 == -1);
     }
