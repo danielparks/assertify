@@ -13,10 +13,8 @@ fn my_test() {
 
 ## To do
 
-  * Test failures
-  * Test compilation failures
-  * Fix compilation failure errors
-  * Improve failure messages when for ops other than ==
+  * Improve compilation errors when `assertify!` is given something other than
+    a comparison.
   * Document macros
 
 ## License
