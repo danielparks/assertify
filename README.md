@@ -1,21 +1,35 @@
-# Assertify
+# Assertify and Testify
 
-Convenience macros to make Rust code tests from simple expressions.
+This provides two convenience macros to make Rust code tests from simple
+expressions.
+
+### `testify!(name, expr)`
+
+Generates a test function named `name` that asserts that `expr` is true.
 
 ```rust
 testify!(concat_literals, concat("a", "b") == "ab");
+```
 
+### `assertify!(expr)`
+
+Generates an assertion for `expr` with a friendly failure message.
+
+```rust
 #[test]
-fn my_test() {
-  assertify!(concat("a", "b") == "ab");
+fn simple_eq() {
+    assertify!(1 + 2 == 0);
 }
 ```
 
-## To do
 
-  * Improve compilation errors when `assertify!` is given something other than
-    a comparison.
-  * Document macros
+```
+---- tests::fail_simple_eq stdout ----
+thread 'tests::simple_eq' panicked at 'failed: 1 + 2 == 0
+  actual:      3
+  expected: == 0
+', src/lib.rs:96:9
+```
 
 ## License
 

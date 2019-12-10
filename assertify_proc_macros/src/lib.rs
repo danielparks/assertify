@@ -82,12 +82,18 @@ impl Parse for Testified {
     }
 }
 
+// Convert an expression into a call to assert
+//
+// Docs are in the wrapper crate (assertify).
 #[proc_macro_hack]
 pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let assertified = parse_macro_input!(input as Assertified);
     quote!(#assertified).into()
 }
 
+// Convert an expression into a test function
+//
+// Docs are in the wrapper crate (assertify).
 #[proc_macro]
 pub fn testify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let Testified{name, assertion} = parse_macro_input!(input as Testified);

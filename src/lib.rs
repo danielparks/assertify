@@ -1,8 +1,35 @@
 use proc_macro_hack::proc_macro_hack;
 
+/// Convert an expression into a call to assert
+///
+/// `assertify!` takes one arguments: the expression to test. The expression
+/// must be contain a standard comparison operator: `==`, `!=`, `>`, `>=`,
+/// `<=`, or `<=`.
+///
+/// ```ignore
+/// assertify!(1 + 2 == 3);
+/// ```
 #[proc_macro_hack]
 pub use assertify_proc_macros::assertify;
 
+/// Convert an expression into a test function
+///
+/// `testify!` takes two arguments: a name for the function and the expression
+/// to test. The expression must be contain a standard comparison operator:
+/// `==`, `!=`, `>`, `>=`, `<=`, or `<=`.
+///
+/// The following two examples are equivalent:
+///
+/// ```ignore
+/// testify!(add_one_two, 1 + 2 == 3);
+/// ```
+///
+/// ```rust
+/// #[test]
+/// fn add_one_two() {
+///     assertify!(1 + 2 == 3);
+/// }
+/// ```
 pub use assertify_proc_macros::testify;
 
 #[cfg(test)]
