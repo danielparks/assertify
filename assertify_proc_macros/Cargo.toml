@@ -1,9 +1,12 @@
 [package]
 name = "assertify_proc_macros"
-version = "0.1.0"
+version = "0.5.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
 description = "Actual macro code for assertify. Do not use this directly."
+homepage = "https://github.com/danielparks/assertify"
+repository = "https://github.com/danielparks/assertify"
 license = "MIT OR Apache-2.0"
+maintenance = { status = "actively-developed" }
 edition = "2018"
 
 [lib]
