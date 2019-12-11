@@ -2,12 +2,14 @@
 name = "assertify_proc_macros"
 version = "0.5.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
-description = "Actual macro code for assertify. Do not use this directly."
+description = "Actual macro code for https://github.com/danielparks/assertify. Do not use this directly."
 homepage = "https://github.com/danielparks/assertify"
 repository = "https://github.com/danielparks/assertify"
 license = "MIT OR Apache-2.0"
-maintenance = { status = "actively-developed" }
 edition = "2018"
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [lib]
 proc-macro = true
