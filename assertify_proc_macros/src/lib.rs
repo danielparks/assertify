@@ -1,3 +1,6 @@
+//! Do not use this crate directly. Instead use the wrapper crate,
+//! [assertify.](../assertify/macro.assertify.html)
+
 extern crate proc_macro;
 use proc_macro_hack::proc_macro_hack;
 use proc_macro2::TokenStream;
@@ -61,7 +64,7 @@ impl ToTokens for Assertified {
                 tokens.extend(quote!({
                     let result: bool = #expr;
                     if !result {
-                        panic!("failed: {}\n", stringify!(#expr));
+                        panic!("failed: {}", stringify!(#expr));
                     }
                 }));
             }
@@ -84,18 +87,20 @@ impl Parse for Testified {
     }
 }
 
-// Convert an expression into a call to assert
-//
-// Docs are in the wrapper crate (assertify).
+/// Assert that an expression is true.
+///
+/// Do not use this directly. Instead, use
+/// [assertify::assertify](../assertify/macro.assertify.html).
 #[proc_macro_hack]
 pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let assertified = parse_macro_input!(input as Assertified);
     quote!(#assertified).into()
 }
 
-// Convert an expression into a test function
-//
-// Docs are in the wrapper crate (assertify).
+/// Convert an expression into a test function.
+///
+/// Do not use this directly. Instead, use
+/// [assertify::testify](../assertify/macro.testify.html).
 #[proc_macro]
 pub fn testify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let Testified{name, assertion} = parse_macro_input!(input as Testified);

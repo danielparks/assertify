@@ -1,7 +1,6 @@
 # Assertify and Testify
 
-This provides two convenience macros to make Rust code tests from simple
-expressions.
+This provides two convenience macros to make tests from simple Rust expressions.
 
 ### `testify!(name, expr)`
 
@@ -21,7 +20,6 @@ fn simple_eq() {
     assertify!(1 + 2 == 0);
 }
 ```
-
 
 ```
 ---- tests::fail_simple_eq stdout ----

@@ -1,26 +1,82 @@
+//! This provides two convenience macros to make tests from simple expressions.
+//!
+//! ```rust
+//! # #[macro_use] extern crate assertify;
+//! # fn main() {}
+//! testify!(add_one_two, 1 + 2 == 3);
+//! ```
+//!
+//! ```rust
+//! #[test]
+//! fn add_one_two() {
+//!     assertify!(1 + 2 == 3);
+//! }
+//! ```
+
+
 use proc_macro_hack::proc_macro_hack;
 
-/// Convert an expression into a call to assert
+/// Assert an expression is true or give a useful error when it isn’t.
 ///
-/// `assertify!` takes one arguments: the expression to test. The expression
-/// must be contain a standard comparison operator: `==`, `!=`, `>`, `>=`,
-/// `<=`, or `<=`.
+/// If the expression contains a comparison, e.g. `==`, then the failure message
+/// will display the value of both sides of the comparison. Note that the
+/// _right_ side will be listed as the “expected” value — think “right” as in
+/// “correct.”
 ///
-/// ```ignore
-/// assertify!(1 + 2 == 3);
+/// # Examples
+///
+/// ## Error for a failed comparison
+///
+/// ```should_panic
+/// # #[macro_use] extern crate assertify;
+/// # fn main() {
+/// assertify!(1 + 2 == 0);
+/// # }
+/// ```
+///
+/// Produces:
+///
+/// ```text
+/// ---- tests::fail_simple_eq stdout ----
+/// thread 'tests::simple_eq' panicked at 'failed: 1 + 2 == 0
+///   actual:      3
+///   expected: == 0
+/// ', src/lib.rs:96:9
+/// ```
+///
+/// ## Error for other failures
+///
+/// ```should_panic
+/// # #[macro_use] extern crate assertify;
+/// # fn main() {
+/// assertify!(false);
+/// # }
+/// ```
+///
+/// Produces:
+///
+/// ```text
+/// ---- tests::fail_simple_literal stdout ----
+/// thread 'tests::fail_simple_literal' panicked at 'failed: false', src/lib.rs:131:9
 /// ```
 #[proc_macro_hack]
 pub use assertify_proc_macros::assertify;
 
-/// Convert an expression into a test function
+/// Create a test function from an expression.
 ///
-/// `testify!` takes two arguments: a name for the function and the expression
-/// to test. The expression must be contain a standard comparison operator:
-/// `==`, `!=`, `>`, `>=`, `<=`, or `<=`.
+/// `testify!` is essentially a wrapper around [`assertify!`]. It takes two
+/// arguments:
+///
+/// 1. `name`: A name for the test (as a bareword — don’t use quotes).
+/// 2. `expression`: The expression to be tested with [`assertify!`].
+///
+/// # Examples
 ///
 /// The following two examples are equivalent:
 ///
-/// ```ignore
+/// ```rust
+/// # #[macro_use] extern crate assertify;
+/// # fn main() {}
 /// testify!(add_one_two, 1 + 2 == 3);
 /// ```
 ///
@@ -30,6 +86,8 @@ pub use assertify_proc_macros::assertify;
 ///     assertify!(1 + 2 == 3);
 /// }
 /// ```
+///
+/// [`assertify!`]: macro.assertify.html
 pub use assertify_proc_macros::testify;
 
 #[cfg(test)]
