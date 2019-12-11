@@ -6,64 +6,56 @@ use syn::parse_macro_input;
 use syn::parse::{self, Parse, ParseStream};
 
 #[derive(Debug)]
-struct Assertified(syn::Expr);
+enum Assertified {
+    BinaryExpr(syn::ExprBinary),
+}
 
 impl Parse for Assertified {
     fn parse(input: ParseStream) -> parse::Result<Assertified> {
-        let expr = input.parse()?;
-        Ok(Assertified(expr))
+        let parsed = input.parse()?;
+        match &parsed {
+            syn::Expr::Binary(expr) => {
+                match expr.op {
+                    syn::BinOp::Eq(_) | syn::BinOp::Ne(_)
+                        | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
+                        | syn::BinOp::Gt(_) | syn::BinOp::Ge(_)
+                    => Ok(Assertified::BinaryExpr(expr.clone())),
+                    _ => Err(syn::Error::new_spanned(&parsed, "expected a comparison, e.g. foo() == 1")),
+                }
+            }
+            _ => Err(syn::Error::new_spanned(&parsed, "expected a comparison, e.g. foo() == 1")),
+        }
     }
 }
 
 impl ToTokens for Assertified {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        match &self.0 {
-            syn::Expr::Binary(expr) => {
-                self.binary_expression_to_tokens(&expr, tokens);
-            }
-            _ => {
-                panic!("not a binary expression, e.g. 1 == 1");
+        match self {
+            Assertified::BinaryExpr(expr) => {
+                // FIXME? ignore attributes
+                // FIXME? b"ab" comes out as [97, 98]
+                let actual = &expr.left;
+                let expected = &expr.right;
+                let op = &expr.op;
+                tokens.extend(quote!({
+                    let actual = #actual;
+                    let expected = #expected;
+                    let op = stringify!(#op);
+                    if !(actual #op expected) {
+                        panic!(
+                            "failed: {expr}\n  \
+                              actual:   {sp:width$} {actual:?}\n  \
+                              expected: {op:width$} {expected:?}\n",
+                            expr=stringify!(#expr),
+                            sp="",
+                            op=op,
+                            width=op.len(),
+                            actual=actual,
+                            expected=expected);
+                    }
+                }));
             }
         }
-    }
-}
-
-impl Assertified {
-    fn binary_expression_to_tokens(&self, expr: &syn::ExprBinary, tokens: &mut TokenStream) {
-        match expr.op {
-            syn::BinOp::Eq(_)
-            | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
-            | syn::BinOp::Ne(_)
-            | syn::BinOp::Gt(_) | syn::BinOp::Ge(_) => {
-                // These comparisons are fine.
-            },
-            _ => {
-                panic!("Expected comparison operator");
-            }
-        }
-
-        // FIXME? ignore attributes
-        // FIXME? b"ab" comes out as [97, 98]
-        let actual = &expr.left;
-        let expected = &expr.right;
-        let op = &expr.op;
-        tokens.extend(quote!({
-            let actual = #actual;
-            let expected = #expected;
-            let op = stringify!(#op);
-            if !(actual #op expected) {
-                panic!(
-                    "failed: {expr}\n  \
-                      actual:   {sp:width$} {actual:?}\n  \
-                      expected: {op:width$} {expected:?}\n",
-                    expr=stringify!(#expr),
-                    sp="",
-                    op=op,
-                    width=op.len(),
-                    actual=actual,
-                    expected=expected);
-            }
-        }));
     }
 }
 

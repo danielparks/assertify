@@ -1,7 +1,5 @@
-error: proc macro panicked
- --> $DIR/testify_not_binary_expression.rs:3:1
+error: expected a comparison, e.g. foo() == 1
+ --> $DIR/testify_not_binary_expression.rs:3:20
   |
 3 | testify!(foo_test, "foo");
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  |
-  = help: message: not a binary expression, e.g. 1 == 1
+  |                    ^^^^^
