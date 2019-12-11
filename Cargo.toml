@@ -1,6 +1,6 @@
 [package]
 name = "assertify"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
 description = "Make tests from simple expressions without boilerplate"
 homepage = "https://github.com/danielparks/assertify"
@@ -15,7 +15,7 @@ edition = "2018"
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-assertify_proc_macros = { version = "0.5.0", path = "assertify_proc_macros" }
+assertify_proc_macros = { version = "0.6.0", path = "assertify_proc_macros" }
 proc-macro-hack = "0.5"
 
 [dev-dependencies]
