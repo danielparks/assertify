@@ -1,5 +1,0 @@
-error: expected a comparison, e.g. foo() == 1
- --> $DIR/testify_not_binary_expression.rs:3:20
-  |
-3 | testify!(foo_test, "foo");
-  |                    ^^^^^

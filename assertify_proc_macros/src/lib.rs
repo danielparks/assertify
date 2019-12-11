@@ -8,23 +8,25 @@ use syn::parse::{self, Parse, ParseStream};
 #[derive(Debug)]
 enum Assertified {
     BinaryExpr(syn::ExprBinary),
+    Other(syn::Expr),
 }
 
 impl Parse for Assertified {
     fn parse(input: ParseStream) -> parse::Result<Assertified> {
         let parsed = input.parse()?;
-        match &parsed {
-            syn::Expr::Binary(expr) => {
-                match expr.op {
-                    syn::BinOp::Eq(_) | syn::BinOp::Ne(_)
-                        | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
-                        | syn::BinOp::Gt(_) | syn::BinOp::Ge(_)
-                    => Ok(Assertified::BinaryExpr(expr.clone())),
-                    _ => Err(syn::Error::new_spanned(&parsed, "expected a comparison, e.g. foo() == 1")),
+        if let syn::Expr::Binary(expr) = &parsed {
+            match expr.op {
+                syn::BinOp::Eq(_) | syn::BinOp::Ne(_)
+                    | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
+                    | syn::BinOp::Gt(_) | syn::BinOp::Ge(_)
+                => {
+                    return Ok(Assertified::BinaryExpr(expr.clone()));
                 }
+                _ => {},
             }
-            _ => Err(syn::Error::new_spanned(&parsed, "expected a comparison, e.g. foo() == 1")),
         }
+
+        Ok(Assertified::Other(parsed))
     }
 }
 
@@ -52,6 +54,14 @@ impl ToTokens for Assertified {
                             width=op.len(),
                             actual=actual,
                             expected=expected);
+                    }
+                }));
+            }
+            Assertified::Other(expr) => {
+                tokens.extend(quote!({
+                    let result: bool = #expr;
+                    if !result {
+                        panic!("failed: {}\n", stringify!(#expr));
                     }
                 }));
             }

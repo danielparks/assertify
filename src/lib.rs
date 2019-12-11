@@ -83,6 +83,9 @@ mod tests {
         }
     }
 
+    testify!(literal_true, true);
+    testify!(boolean_logic, true && true);
+
     testify!(result_ok, result(true) == Ok(()));
     testify!(result_unwrap, result(true).unwrap() == ());
     testify!(result_err, result(false) == Err("bad"));
@@ -95,6 +98,12 @@ mod tests {
     #[should_panic]
     fn fail_simple_eq() {
         assertify!(1 + 2 == 0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_simple_literal() {
+        assertify!(false);
     }
 
     #[test]

@@ -1,5 +1,8 @@
-error: expected a comparison, e.g. foo() == 1
+error[E0308]: mismatched types
  --> $DIR/not_binary_expression.rs:4:16
   |
 4 |     assertify!("foo");
-  |                ^^^^^
+  |                ^^^^^ expected bool, found reference
+  |
+  = note: expected type `bool`
+             found type `&'static str`
