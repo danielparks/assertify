@@ -8,6 +8,8 @@ use quote::{quote, ToTokens};
 use syn::parse::{self, Parse, ParseStream};
 use syn::parse_macro_input;
 
+// FIXME not sure if we care about large_enum_variant
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug)]
 enum Assertified {
     BinaryExpr(syn::ExprBinary),
