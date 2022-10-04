@@ -2,7 +2,9 @@ error[E0308]: mismatched types
  --> $DIR/not_comparison.rs:4:16
   |
 4 |     assertify!(1 + 2);
-  |                ^^^^^ expected bool, found integer
+  |     -----------^^^^^-
+  |     |          |
+  |     |          expected `bool`, found integer
+  |     expected due to this
   |
-  = note: expected type `bool`
-             found type `{integer}`
+  = note: this error originates in the macro `proc_macro_call` which comes from the expansion of the macro `assertify` (in Nightly builds, run with -Z macro-backtrace for more info)

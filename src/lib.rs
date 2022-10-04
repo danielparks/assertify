@@ -13,7 +13,6 @@
 //! }
 //! ```
 
-
 use proc_macro_hack::proc_macro_hack;
 
 /// Assert an expression is true or give a useful error when it isn’t.

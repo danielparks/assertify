@@ -2,12 +2,14 @@
 //! [assertify.](../assertify/macro.assertify.html)
 
 extern crate proc_macro;
-use proc_macro_hack::proc_macro_hack;
 use proc_macro2::TokenStream;
+use proc_macro_hack::proc_macro_hack;
 use quote::{quote, ToTokens};
-use syn::parse_macro_input;
 use syn::parse::{self, Parse, ParseStream};
+use syn::parse_macro_input;
 
+// FIXME not sure if we care about large_enum_variant
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug)]
 enum Assertified {
     BinaryExpr(syn::ExprBinary),
@@ -19,13 +21,15 @@ impl Parse for Assertified {
         let parsed = input.parse()?;
         if let syn::Expr::Binary(expr) = &parsed {
             match expr.op {
-                syn::BinOp::Eq(_) | syn::BinOp::Ne(_)
-                    | syn::BinOp::Lt(_) | syn::BinOp::Le(_)
-                    | syn::BinOp::Gt(_) | syn::BinOp::Ge(_)
-                => {
+                syn::BinOp::Eq(_)
+                | syn::BinOp::Ne(_)
+                | syn::BinOp::Lt(_)
+                | syn::BinOp::Le(_)
+                | syn::BinOp::Gt(_)
+                | syn::BinOp::Ge(_) => {
                     return Ok(Assertified::BinaryExpr(expr.clone()));
                 }
-                _ => {},
+                _ => {}
             }
         }
 
@@ -103,11 +107,12 @@ pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 /// [assertify::testify](../assertify/macro.testify.html).
 #[proc_macro]
 pub fn testify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let Testified{name, assertion} = parse_macro_input!(input as Testified);
+    let Testified { name, assertion } = parse_macro_input!(input as Testified);
     quote!(
         #[test]
         fn #name() {
             #assertion;
         }
-    ).into()
+    )
+    .into()
 }
