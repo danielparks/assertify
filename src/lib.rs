@@ -149,35 +149,35 @@ mod tests {
     testify!(result_not_ok, result(false) != Ok(()));
     testify!(result_not_err, result(false) != Err("nope"));
 
-    // FIXME check error messages from should_panic
-
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "failed: 1 + 2 == 0\n  actual:      3\n  expected: == 0\n")]
     fn fail_simple_eq() {
         assertify!(1 + 2 == 0);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "failed: false")]
     fn fail_simple_literal() {
         assertify!(false);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "failed: 1 + 2 != 3\n  actual:      3\n  expected: != 3\n")]
     fn fail_simple_ne() {
         assertify!(1 + 2 != 3);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "failed: 1 + 2 > 4\n  actual:     3\n  expected: > 4\n")]
     fn fail_simple_gt() {
         assertify!(1 + 2 > 4);
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(
+        expected = "failed: result(false) == Ok(())\n  actual:      Err(\"bad\")\n  expected: == Ok(())\n"
+    )]
     fn fail_result_ok() {
-        assertify!(result(false).unwrap() == ());
+        assertify!(result(false) == Ok(()));
     }
 }
