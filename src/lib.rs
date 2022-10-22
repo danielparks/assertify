@@ -150,7 +150,9 @@ mod tests {
     testify!(result_not_err, result(false) != Err("nope"));
 
     #[test]
-    #[should_panic(expected = "failed: 1 + 2 == 0\n  actual:      3\n  expected: == 0\n")]
+    #[should_panic(
+        expected = "failed: 1 + 2 == 0\n  actual:      3\n  expected: == 0\n"
+    )]
     fn fail_simple_eq() {
         assertify!(1 + 2 == 0);
     }
@@ -162,13 +164,17 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "failed: 1 + 2 != 3\n  actual:      3\n  expected: != 3\n")]
+    #[should_panic(
+        expected = "failed: 1 + 2 != 3\n  actual:      3\n  expected: != 3\n"
+    )]
     fn fail_simple_ne() {
         assertify!(1 + 2 != 3);
     }
 
     #[test]
-    #[should_panic(expected = "failed: 1 + 2 > 4\n  actual:     3\n  expected: > 4\n")]
+    #[should_panic(
+        expected = "failed: 1 + 2 > 4\n  actual:     3\n  expected: > 4\n"
+    )]
     fn fail_simple_gt() {
         assertify!(1 + 2 > 4);
     }
