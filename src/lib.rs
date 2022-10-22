@@ -1,4 +1,9 @@
 //! This provides two convenience macros to make tests from simple expressions.
+//! The failure messages produced by these macros are more instantly obvious
+//! than those of `assert_eq!` and friends, which often require looking at the
+//! source code to see the expression that failed.
+//!
+//! See [assertify!](macro.assertify.html) for an example of a failure message.
 //!
 //! ```rust
 //! # #[macro_use] extern crate assertify;
@@ -36,7 +41,7 @@ use proc_macro_hack::proc_macro_hack;
 /// Produces:
 ///
 /// ```text
-/// ---- tests::fail_simple_eq stdout ----
+/// ---- tests::simple_eq stdout ----
 /// thread 'tests::simple_eq' panicked at 'failed: 1 + 2 == 0
 ///   actual:      3
 ///   expected: == 0
@@ -55,8 +60,8 @@ use proc_macro_hack::proc_macro_hack;
 /// Produces:
 ///
 /// ```text
-/// ---- tests::fail_simple_literal stdout ----
-/// thread 'tests::fail_simple_literal' panicked at 'failed: false', src/lib.rs:131:9
+/// ---- tests::simple_literal stdout ----
+/// thread 'tests::simple_literal' panicked at 'failed: false', src/lib.rs:131:9
 /// ```
 #[proc_macro_hack]
 pub use assertify_proc_macros::assertify;
