@@ -61,6 +61,10 @@ thread 'tests::concat_literals' panicked at 'failed: concat("a", "b") == "aX"
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
+## Compatibility
+
+This requires at least Rust version 1.45 (released in July 2020).
+
 ## License
 
 This project dual-licensed under the Apache 2 and MIT licenses. You may choose
