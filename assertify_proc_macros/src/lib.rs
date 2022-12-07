@@ -1,9 +1,7 @@
 //! Do not use this crate directly. Instead use the wrapper crate,
 //! [assertify.](../assertify/macro.assertify.html)
 
-extern crate proc_macro;
 use proc_macro2::TokenStream;
-use proc_macro_hack::proc_macro_hack;
 use quote::{quote, ToTokens};
 use syn::parse::{self, Parse, ParseStream};
 use syn::parse_macro_input;
@@ -95,7 +93,7 @@ impl Parse for Testified {
 ///
 /// Do not use this directly. Instead, use
 /// [assertify::assertify](../assertify/macro.assertify.html).
-#[proc_macro_hack]
+#[proc_macro]
 pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let assertified = parse_macro_input!(input as Assertified);
     quote!(#assertified).into()

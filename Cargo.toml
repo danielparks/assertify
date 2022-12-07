@@ -16,7 +16,6 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 assertify_proc_macros = { version = "0.6.1", path = "assertify_proc_macros" }
-proc-macro-hack = "0.5"
 
 [dev-dependencies]
 trybuild = "1.0"

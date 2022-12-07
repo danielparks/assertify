@@ -18,8 +18,6 @@
 //! }
 //! ```
 
-use proc_macro_hack::proc_macro_hack;
-
 /// Assert an expression is true or give a useful error when it isn’t.
 ///
 /// If the expression contains a comparison, e.g. `==`, then the failure message
@@ -63,7 +61,6 @@ use proc_macro_hack::proc_macro_hack;
 /// ---- tests::simple_literal stdout ----
 /// thread 'tests::simple_literal' panicked at 'failed: false', src/lib.rs:131:9
 /// ```
-#[proc_macro_hack]
 pub use assertify_proc_macros::assertify;
 
 /// Create a test function from an expression.
