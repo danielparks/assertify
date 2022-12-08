@@ -11,8 +11,13 @@ categories = ["development-tools::testing"]
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
+[lib]
+proc-macro = true
+
 [dependencies]
-assertify_proc_macros = { version = "0.6.1", path = "assertify_proc_macros" }
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "1.0", features = ["full", "extra-traits"] }
 
 [dev-dependencies]
 trybuild = "1.0"

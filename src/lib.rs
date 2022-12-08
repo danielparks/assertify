@@ -18,6 +18,94 @@
 //! }
 //! ```
 
+use proc_macro2::TokenStream;
+use quote::{quote, ToTokens};
+use syn::parse::{self, Parse, ParseStream};
+use syn::parse_macro_input;
+
+// FIXME not sure if we care about large_enum_variant
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug)]
+enum Assertified {
+    BinaryExpr(syn::ExprBinary),
+    Other(syn::Expr),
+}
+
+impl Parse for Assertified {
+    fn parse(input: ParseStream) -> parse::Result<Assertified> {
+        let parsed = input.parse()?;
+        if let syn::Expr::Binary(expr) = &parsed {
+            match expr.op {
+                syn::BinOp::Eq(_)
+                | syn::BinOp::Ne(_)
+                | syn::BinOp::Lt(_)
+                | syn::BinOp::Le(_)
+                | syn::BinOp::Gt(_)
+                | syn::BinOp::Ge(_) => {
+                    return Ok(Assertified::BinaryExpr(expr.clone()));
+                }
+                _ => {}
+            }
+        }
+
+        Ok(Assertified::Other(parsed))
+    }
+}
+
+impl ToTokens for Assertified {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        match self {
+            Assertified::BinaryExpr(expr) => {
+                // FIXME? ignore attributes
+                // FIXME? b"ab" comes out as [97, 98]
+                let actual = &expr.left;
+                let expected = &expr.right;
+                let op = &expr.op;
+                tokens.extend(quote!({
+                    let actual = #actual;
+                    let expected = #expected;
+                    let op = stringify!(#op);
+                    if !(actual #op expected) {
+                        panic!(
+                            "failed: {expr}\n  \
+                              actual:   {sp:width$} {actual:?}\n  \
+                              expected: {op:width$} {expected:?}\n",
+                            expr=stringify!(#expr),
+                            sp="",
+                            op=op,
+                            width=op.len(),
+                            actual=actual,
+                            expected=expected);
+                    }
+                }));
+            }
+            Assertified::Other(expr) => {
+                tokens.extend(quote!({
+                    let result: bool = #expr;
+                    if !result {
+                        panic!("failed: {}", stringify!(#expr));
+                    }
+                }));
+            }
+        }
+    }
+}
+
+#[derive(Debug)]
+struct Testified {
+    name: syn::Ident,
+    assertion: Assertified,
+}
+
+impl Parse for Testified {
+    fn parse(input: ParseStream) -> parse::Result<Testified> {
+        let name = input.parse()?;
+        input.parse::<syn::Token![,]>()?;
+        let assertion = input.parse()?;
+        Ok(Testified { name, assertion })
+    }
+}
+
 /// Assert an expression is true or give a useful error when it isn’t.
 ///
 /// If the expression contains a comparison, e.g. `==`, then the failure message
@@ -61,7 +149,11 @@
 /// ---- tests::simple_literal stdout ----
 /// thread 'tests::simple_literal' panicked at 'failed: false', src/lib.rs:131:9
 /// ```
-pub use assertify_proc_macros::assertify;
+#[proc_macro]
+pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let assertified = parse_macro_input!(input as Assertified);
+    quote!(#assertified).into()
+}
 
 /// Create a test function from an expression.
 ///
@@ -89,103 +181,14 @@ pub use assertify_proc_macros::assertify;
 /// ```
 ///
 /// [`assertify!`]: macro.assertify.html
-pub use assertify_proc_macros::testify;
-
-#[cfg(test)]
-mod tests {
-    pub use super::*;
-
-    #[test]
-    fn trybuild_tests() {
-        let t = trybuild::TestCases::new();
-        t.compile_fail("tests/trybuild-failures/*.rs");
-    }
-
-    #[test]
-    fn assertify_simple_expr() {
-        assertify!(1 - 2 == -1);
-    }
-
-    testify!(simple_eq, 1 + 2 == 3);
-
-    fn add(a: i32, b: i32) -> i32 {
-        a + b
-    }
-
-    testify!(add_pos, add(1, 2) == 3);
-    testify!(add_neg, add(-1, 2) == 1);
-    testify!(add_all_expressions, add(add(1, 1), 5 - 3) == 2 + 5 - 3);
-
-    fn concat(a: &str, b: &str) -> String {
-        let mut s = String::with_capacity(a.len() + b.len());
-        s.push_str(a);
-        s.push_str(b);
-        s
-    }
-
-    testify!(concat_literal, concat("a", "b") == "ab");
-
-    fn concat_bytes(a: &[u8], b: &[u8]) -> Vec<u8> {
-        let mut v = Vec::with_capacity(a.len() + b.len());
-        v.extend_from_slice(a);
-        v.extend_from_slice(b);
-        v
-    }
-
-    testify!(concat_bytes_literals, concat_bytes(b"a", b"b") == b"ab");
-
-    fn result(good: bool) -> Result<(), &'static str> {
-        if good {
-            Ok(())
-        } else {
-            Err("bad")
+#[proc_macro]
+pub fn testify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let Testified { name, assertion } = parse_macro_input!(input as Testified);
+    quote!(
+        #[test]
+        fn #name() {
+            #assertion;
         }
-    }
-
-    testify!(literal_true, true);
-    testify!(boolean_logic, true && true);
-
-    testify!(result_ok, result(true) == Ok(()));
-    testify!(result_unwrap, result(true).unwrap() == ());
-    testify!(result_err, result(false) == Err("bad"));
-    testify!(result_not_ok, result(false) != Ok(()));
-    testify!(result_not_err, result(false) != Err("nope"));
-
-    #[test]
-    #[should_panic(
-        expected = "failed: 1 + 2 == 0\n  actual:      3\n  expected: == 0\n"
-    )]
-    fn fail_simple_eq() {
-        assertify!(1 + 2 == 0);
-    }
-
-    #[test]
-    #[should_panic(expected = "failed: false")]
-    fn fail_simple_literal() {
-        assertify!(false);
-    }
-
-    #[test]
-    #[should_panic(
-        expected = "failed: 1 + 2 != 3\n  actual:      3\n  expected: != 3\n"
-    )]
-    fn fail_simple_ne() {
-        assertify!(1 + 2 != 3);
-    }
-
-    #[test]
-    #[should_panic(
-        expected = "failed: 1 + 2 > 4\n  actual:     3\n  expected: > 4\n"
-    )]
-    fn fail_simple_gt() {
-        assertify!(1 + 2 > 4);
-    }
-
-    #[test]
-    #[should_panic(
-        expected = "failed: result(false) == Ok(())\n  actual:      Err(\"bad\")\n  expected: == Ok(())\n"
-    )]
-    fn fail_result_ok() {
-        assertify!(result(false) == Ok(()));
-    }
+    )
+    .into()
 }
