@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
+* Consolidated old assertify_proc_macros crate into this crate. This crate only
+  defines the procedural macros and does not actually use them, so there is no
+  need for a sub-crate.
 * Removed use of [proc_macro_hack][], which hasn’t been needed since Rust 1.45
   (released in July 2020).
 * Added this change log.
