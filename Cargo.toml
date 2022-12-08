@@ -2,7 +2,7 @@
 name = "assertify"
 version = "0.6.1"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
-description = "Make tests from simple expressions with easy to understand failures"
+description = "Clearer assertions and tests for expressions"
 homepage = "https://github.com/danielparks/assertify"
 repository = "https://github.com/danielparks/assertify"
 readme = "README.md"
