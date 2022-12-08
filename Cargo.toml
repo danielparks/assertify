@@ -1,6 +1,6 @@
 [package]
 name = "assertify"
-version = "0.6.1"
+version = "1.0.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
 description = "Clearer assertions and tests for expressions"
 homepage = "https://github.com/danielparks/assertify"
