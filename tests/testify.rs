@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use assertify::testify;
 
 testify!(simple_eq, 1 + 2 == 3);

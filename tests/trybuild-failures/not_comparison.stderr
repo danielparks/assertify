@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
- --> $DIR/not_comparison.rs:4:16
+ --> $DIR/not_comparison.rs:6:16
   |
-4 |     assertify!(1 + 2);
+6 |     assertify!(1 + 2);
   |     -----------^^^^^-
   |     |          |
   |     |          expected `bool`, found integer

@@ -1,9 +1,23 @@
-# Assertify and Testify
+# Deprecated — use [assert2][]
 
-This provides two convenience macros to make tests with easy to understand
-failure messages from simple Rust expressions.
+Use [assert2][] instead of this crate. `assertify!` can be replaced by the
+more capable [`assert2::assert!`][] everywhere, and `testify!` can implemented
+with a short macro:
+
+```rust
+macro_rules! testify {
+    ($name:ident, $($test:tt)+) => {
+        #[test]
+        fn $name() {
+            ::assert2::assert!($($test)+);
+        }
+    };
+}
+```
 
 ### `assertify!(expr)`
+
+**Deprecated**: use [`assert2::assert!`][].
 
 Generates an assertion for `expr` with a friendly failure message. If `expr` is
 a binary expression, the actual value should be on the left and the expected
@@ -44,6 +58,19 @@ thread 'tests::simple_eq_traditional' panicked at 'assertion failed: `(left == r
 
 ### `testify!(name, expr)`
 
+**Deprecated**: Use the following:
+
+```rust
+macro_rules! testify {
+    ($name:ident, $($test:tt)+) => {
+        #[test]
+        fn $name() {
+            ::assert2::assert!($($test)+);
+        }
+    };
+}
+```
+
 Generates a test function named `name` that asserts that `expr` is true.
 
 ```rust
@@ -78,3 +105,7 @@ to use either.
 Unless you explicitly state otherwise, any contribution you submit as defined
 in the Apache 2.0 license shall be dual licensed as above, without any
 additional terms or conditions.
+
+
+[assert2]: https://crates.io/crates/assert2
+[`assert2::assert!`]: https://docs.rs/assert2/0.3.7/assert2/macro.assert.html

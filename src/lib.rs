@@ -149,6 +149,7 @@ impl Parse for Testified {
 /// ---- tests::simple_literal stdout ----
 /// thread 'tests::simple_literal' panicked at 'failed: false', src/lib.rs:131:9
 /// ```
+#[deprecated(since = "0.7.0", note = "use assert2::assert! instead")]
 #[proc_macro]
 pub fn assertify(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let assertified = parse_macro_input!(input as Assertified);
