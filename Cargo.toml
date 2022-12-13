@@ -1,8 +1,8 @@
 [package]
 name = "assertify"
-version = "0.6.1"
+version = "0.7.0"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
-description = "Clearer assertions and tests for expressions"
+description = "Deprecated: use assert2 for better assertions"
 homepage = "https://github.com/danielparks/assertify"
 repository = "https://github.com/danielparks/assertify"
 readme = "README.md"

@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
- --> $DIR/not_binary_expression.rs:4:16
+ --> $DIR/not_binary_expression.rs:6:16
   |
-4 |     assertify!("foo");
+6 |     assertify!("foo");
   |     -----------^^^^^-
   |     |          |
   |     |          expected `bool`, found `&str`
