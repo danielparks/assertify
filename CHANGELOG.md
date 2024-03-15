@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 0.7.1 (2024-03-15)
+
+* Restore stub of `assertify_proc_macros` sub-crate so that I can mark it
+  deprecated and publish it.
+* Mark both crates with a deprecated badge in `Cargo.toml` as instructed by
+  [lib.rs](https://lib.rs/)’s maintainer page.
+* Make sure deprecation notice shows up clearly on [docs.rs](https://docs.rs/).
+
 ## Release 0.7.0 (2022-12-11)
 
 ### Changes

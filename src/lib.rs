@@ -1,3 +1,5 @@
+//! **Deprecated. Use [assert2](https://crates.io/crates/assert2) instead.**
+//!
 //! This provides two convenience macros to make tests from simple expressions.
 //! The failure messages produced by these macros are more instantly obvious
 //! than those of `assert_eq!` and friends, which often require looking at the

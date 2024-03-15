@@ -1,26 +1,13 @@
 [package]
-name = "assertify"
+name = "assertify_proc_macros"
 version = "0.7.1"
 authors = ["Daniel Parks <oss-assertify@demonhorse.org>"]
 description = "Deprecated: use assert2 for better assertions"
 homepage = "https://github.com/danielparks/assertify"
 repository = "https://github.com/danielparks/assertify"
 readme = "README.md"
-keywords = ["test", "assert"]
-categories = ["development-tools::testing"]
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [badges.maintenance]
 status = "deprecated"
-
-[lib]
-proc-macro = true
-
-[dependencies]
-proc-macro2 = "1.0"
-quote = "1.0"
-syn = { version = "1.0", features = ["full", "extra-traits"] }
-
-[dev-dependencies]
-trybuild = "1.0"
